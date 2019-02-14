@@ -1,0 +1,51 @@
+<android.support.v4.app.FragmentTabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.android.cookpit.com.example.android.CookPit.DetailActivities.EditDishFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/tabhostedit">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:background="#CFD8DC"
+            android:minHeight="45dp"
+            android:layout_alignParentTop="true">
+
+        </TabWidget>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:id="@android:id/tabcontent">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/editTabContent">
+
+
+            </FrameLayout>
+
+
+        </FrameLayout>
+
+
+    </LinearLayout>
+
+
+</android.support.v4.app.FragmentTabHost>
+
+
+
+
+

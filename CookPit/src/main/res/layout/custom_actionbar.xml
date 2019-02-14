@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:id="@+id/custom_action_bar"
+
+    >
+
+
+    <LinearLayout
+        android:id="@+id/menu_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.SearchView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/searchView"
+            android:layout_gravity="right"
+
+
+            >
+
+
+        </android.support.v7.widget.SearchView>
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#fff"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/detail_text"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="200dp"
+        android:layout_toRightOf="@id/menu_title"
+
+        android:gravity="center"
+        android:textAllCaps="true"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+
+        android:textColor="#fff"
+
+        />
+
+
+</RelativeLayout>

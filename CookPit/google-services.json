@@ -1,0 +1,121 @@
+{
+  "project_info": {
+    "project_number": "558488455913",
+    "firebase_url": "https://kitchen-drive.firebaseio.com",
+    "project_id": "kitchen-drive",
+    "storage_bucket": "kitchen-drive.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:558488455913:android:11f0b1113914c490",
+        "android_client_info": {
+          "package_name": "com.example.android.cookpit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "558488455913-jhm16o79jg64sl99hqhlir5m3klbtac3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.cookpit",
+            "certificate_hash": "46dd28404a1eb8599a6291f82884e51321f9e097"
+          }
+        },
+        {
+          "client_id": "558488455913-75k6qhf4h1jl5tcnce9f07sr1lsodg5h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.cookpit",
+            "certificate_hash": "d45b2b3c144780922f7385a978a9c1eae992a2f1"
+          }
+        },
+        {
+          "client_id": "558488455913-8g7rlh0v80u943ranev4h7p6hf05lbg6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2XXMU0cq8gvrfI9GwsFdwVDuUI_t-RIY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "558488455913-8g7rlh0v80u943ranev4h7p6hf05lbg6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "558488455913-ddo2rr9mltla5olsariajijugo1kli4r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "host.exp.exponent"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:558488455913:android:55a8a6cccadf9559",
+        "android_client_info": {
+          "package_name": "com.example.android.kitchendrive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "558488455913-phib0c8pkj5k13nahtgjtu9f1nbqob0g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.kitchendrive",
+            "certificate_hash": "46dd28404a1eb8599a6291f82884e51321f9e097"
+          }
+        },
+        {
+          "client_id": "558488455913-8g7rlh0v80u943ranev4h7p6hf05lbg6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2XXMU0cq8gvrfI9GwsFdwVDuUI_t-RIY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "558488455913-8g7rlh0v80u943ranev4h7p6hf05lbg6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "558488455913-ddo2rr9mltla5olsariajijugo1kli4r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "host.exp.exponent"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

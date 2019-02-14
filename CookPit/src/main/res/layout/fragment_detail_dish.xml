@@ -1,0 +1,132 @@
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detail_dish_scrollview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E1F5FE">
+
+
+    <android.support.design.widget.CoordinatorLayout
+
+        android:id="@+id/detail_dish_fragment"
+        android:name="com.example.android.kitchendrive.DetailActivities.Dish_detail_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:isScrollContainer="true"
+        android:visibility="gone"
+
+
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_chevron_left_black_24dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:id="@+id/dish_chevron_left" />
+
+                <TextView
+                    android:id="@+id/dish_detail_dish_name_textview"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="25dp"
+                    android:visibility="gone"
+                    android:layout_weight="5"
+
+
+                    />
+
+                <ImageView
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_chevron_right_black_24dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:id="@+id/dish_chevron_right" />
+
+            </LinearLayout>
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/dish_imageview"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:background="#FFFFFF"
+                android:padding="115dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@android:drawable/ic_menu_gallery"
+
+                />
+
+            <TextView
+                android:id="@+id/dish_detail_description_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+
+                android:minHeight="40dp" />
+
+            <TextView
+                android:id="@+id/Dish_detail_TextView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_weight="1"
+                android:text="Ingredients : \n  \n" />
+
+            <ExpandableListView
+                android:id="@+id/Dish_detail_expandable_listview"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:focusable="false"
+                android:groupIndicator="@null"
+                android:nestedScrollingEnabled="true">
+
+            </ExpandableListView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="method :        \n   \n  1) \n \n  2)  \n \n  3) \n \n  "
+
+                />
+
+
+        </LinearLayout>
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+
+            android:layout_alignParentTop="true"
+            android:layout_gravity="top|right"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="40dp"
+            android:isScrollContainer="false"
+            android:src="@android:drawable/ic_menu_edit"
+            android:visibility="gone"
+            app:backgroundTint="?attr/actionModeSplitBackground" />
+
+
+    </android.support.design.widget.CoordinatorLayout>
+
+</android.support.v4.widget.NestedScrollView>
