@@ -1,9 +1,12 @@
 package com.example.android.cookpit.pojoClass;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by alexandrelevieux on 23/01/2017.
  */
-public class Mep {
+public class Mep implements Parcelable {
     private int pojoId = 3;
     private String name;
     private String username;
@@ -22,6 +25,26 @@ public class Mep {
         this.description = Description;
 
     }
+
+    protected Mep(Parcel in) {
+        pojoId = in.readInt();
+        name = in.readString();
+        username = in.readString();
+        description = in.readString();
+        id = in.readInt();
+    }
+
+    public static final Creator<Mep> CREATOR = new Creator<Mep>() {
+        @Override
+        public Mep createFromParcel(Parcel in) {
+            return new Mep(in);
+        }
+
+        @Override
+        public Mep[] newArray(int size) {
+            return new Mep[size];
+        }
+    };
 
     public int getId() {
         return this.id;
@@ -56,4 +79,17 @@ public class Mep {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(pojoId);
+        dest.writeString(name);
+        dest.writeString(username);
+        dest.writeString(description);
+        dest.writeInt(id);
+    }
 }

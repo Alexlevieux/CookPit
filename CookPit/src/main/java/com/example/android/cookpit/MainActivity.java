@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -35,6 +36,7 @@ import com.example.android.cookpit.TabFragments.EditDishFragments.EditTabInstruc
 import com.example.android.cookpit.TabFragments.Tab_dish;
 import com.example.android.cookpit.TabFragments.Tab_menu;
 import com.example.android.cookpit.TabFragments.Tab_menu_content;
+import com.example.android.cookpit.TabFragments.Tab_search;
 import com.example.android.cookpit.data.KitchenContract;
 import com.example.android.cookpit.pojoClass.Dish;
 import com.example.android.cookpit.pojoClass.Ingredient;
@@ -45,6 +47,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -103,6 +106,8 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
     public ArrayList<Dish> dishSearch;
     public ArrayList<Mep> mepSearch;
     public ArrayList<Ingredient> ingredientSearch;
+    private ArrayList searchArray;
+    int searchType;
 
 
     private FirebaseAuth mAuth;
@@ -121,137 +126,12 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
 
     @Override
     protected void onNewIntent(Intent intent) {
+
         super.onNewIntent(intent);
-        if (intent.getAction().equals(Intent.ACTION_SEARCH) && intent.getStringExtra(SEARCH_TYPE) != null) {
-
-            String SearchType = intent.getStringExtra(SEARCH_TYPE);
-            isSearchResult = true;
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            query = query + "*";
-            selectionArgs = new String[]{query};
-
-            Log.v("SearchType", String.valueOf(SearchType));
-            switch (SearchType) {
-
-                case TAB_MENU: {
-                    Uri FTS_Menu_Uri = KitchenContract.FtsMenuEntry.buildFtsMenuUri(query);
-
-                    Cursor c = getContentResolver().query(
-                            FTS_Menu_Uri,
-                            null,
-                            null,
-                            selectionArgs,
-                            null
-                    );
-                    menuSearch = UtilityPojo.getMenu(c);
-                    if (menuSearch.size() > 0) {
-                        for (int i = 0; i < menuSearch.size(); i++) {
-
-                            Log.v(menuSearch.get(i).getId() + "  " + menuSearch.get(i).getName(), menuSearch.get(i).getUsername());
-                        }
-                        View view = this.getCurrentFocus();
+        setIntent(intent);
 
 
-                    }
 
-
-                    c.close();
-                    break;
-
-                }
-
-                case TAB_DISH: {
-
-                    Uri Fts_Dish_Uri = KitchenContract.FtsDishEntry.buildFtsDishUri(query);
-
-                    Cursor c = getContentResolver().query(
-                            Fts_Dish_Uri,
-                            null,
-                            null,
-                            selectionArgs,
-                            null
-                    );
-                    Log.v(String.valueOf(c.getCount()), "test");
-                    dishSearch = UtilityPojo.getDish(c);
-
-                    if (dishSearch.size() > 0) {
-                        for (int i = 0; i < dishSearch.size(); i++) {
-                            Log.v(dishSearch.get(i).getId() + "  " + dishSearch.get(i).getName(), dishSearch.get(i).getDescription());
-
-                        }
-
-                    }
-                    c.close();
-                    break;
-                }
-                case TAB_MEP_PREP: {
-
-                    Uri Fts_Mep_Uri = KitchenContract.FtsMepEntry.buildFtsMepUri(query);
-
-                    Cursor c = getContentResolver().query(
-                            Fts_Mep_Uri,
-                            null,
-                            null,
-                            selectionArgs,
-                            null
-                    );
-
-
-                    mepSearch = UtilityPojo.getMep(c);
-
-                    Log.v(String.valueOf(mepSearch.size()), "test");
-                    if (mepSearch.size() > 0) {
-
-                        for (int i = 0; i < mepSearch.size(); i++) {
-                            String description;
-                            if (mepSearch.get(i).getDescription().isEmpty()) {
-                                description = "null";
-
-                            } else description = mepSearch.get(i).getDescription();
-
-                            Log.v(mepSearch.get(i).getId() + "  " + mepSearch.get(i).getName(), description);
-
-                        }
-
-                    }
-                    c.close();
-                    break;
-                }
-                case TAB_INGREDIENT: {
-
-                    Uri Fts_Ingredient_Uri = KitchenContract.FtsIngredientEntry.buildFtsIngredientUri(query);
-
-                    Cursor c = getContentResolver().query(
-                            Fts_Ingredient_Uri,
-                            null,
-                            null,
-                            selectionArgs,
-                            null
-                    );
-
-
-                    ingredientSearch = UtilityPojo.getIngredient(c);
-
-                    Log.v(String.valueOf(ingredientSearch.size()), "test");
-                    if (ingredientSearch.size() > 0) {
-
-                        for (int i = 0; i < ingredientSearch.size(); i++) {
-
-
-                            Log.v(ingredientSearch.get(i).getId() + "  " + ingredientSearch.get(i).getName(), "test");
-
-                        }
-
-                    }
-                    c.close();
-                    break;
-                }
-                case TAB_SEARCH: {
-                    break;
-                }
-
-            }
-        }
     }
 
     @Override
@@ -398,9 +278,9 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
 
             }
 
-            FragmentMain fragmentMain = FragmentMain.newInstance(isSearchResult, null);
+            FragmentMain fragmentMain = FragmentMain.newInstance(isSearchResult, null, searchArray, searchType);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, fragmentMain)
+                    .add(R.id.container, fragmentMain, TAB_MENU_FRAGMENT_TAG)
                     .commit();
 
 
@@ -408,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
 
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new FragmentMain(), TAB_MENU_FRAGMENT_TAG)
+                    .add(R.id.container, FragmentMain.newInstance(isSearchResult, null, searchArray, searchType), TAB_MENU_FRAGMENT_TAG)
                     .commit();
             mAuth = FirebaseAuth.getInstance();
             progressArc = findViewById(R.id.arc_progress);
@@ -475,7 +355,9 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 Toast.makeText(this, "Signed in!", Toast.LENGTH_SHORT).show();
@@ -512,6 +394,163 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
     protected void onResume() {
 
         super.onResume();
+        Intent intent = getIntent();
+
+        if (intent.getAction().equals(Intent.ACTION_SEARCH) && intent.getStringExtra(SEARCH_TYPE) != null) {
+
+            String SearchType = intent.getStringExtra(SEARCH_TYPE);
+            isSearchResult = true;
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            query = query + "*";
+            selectionArgs = new String[]{query};
+            ArrayList arraylist = new ArrayList();
+            Log.v("SearchType", String.valueOf(SearchType));
+            searchType = 0;
+            switch (SearchType) {
+
+                case TAB_MENU: {
+                    Uri FTS_Menu_Uri = KitchenContract.FtsMenuEntry.buildFtsMenuUri(query);
+
+                    Cursor c = getContentResolver().query(
+                            FTS_Menu_Uri,
+                            null,
+                            null,
+                            selectionArgs,
+                            null
+                    );
+                    Log.v(String.valueOf(c.getCount()), "test");
+                    menuSearch = UtilityPojo.getMenu(c);
+
+                    if (menuSearch.size() > 0) {
+                        for (int i = 0; i < menuSearch.size(); i++) {
+
+                            Log.v(menuSearch.get(i).getId() + "  " + menuSearch.get(i).getName(), menuSearch.get(i).getUsername());
+                        }
+                        View view = this.getCurrentFocus();
+
+                        arraylist = menuSearch;
+                        searchType = 1;
+
+                    }
+
+
+                    c.close();
+                    break;
+
+                }
+
+                case TAB_DISH: {
+
+                    Uri Fts_Dish_Uri = KitchenContract.FtsDishEntry.buildFtsDishUri(query);
+
+                    Cursor c = getContentResolver().query(
+                            Fts_Dish_Uri,
+                            null,
+                            null,
+                            selectionArgs,
+                            null
+                    );
+                    Log.v(String.valueOf(c.getCount()), "test");
+                    dishSearch = UtilityPojo.getDish(c);
+
+                    if (dishSearch.size() > 0) {
+                        for (int i = 0; i < dishSearch.size(); i++) {
+                            Log.v(dishSearch.get(i).getId() + "  " + dishSearch.get(i).getName(), dishSearch.get(i).getDescription());
+
+                        }
+                        arraylist = dishSearch;
+                        searchType = 2;
+                    }
+                    c.close();
+                    break;
+                }
+                case TAB_MEP_PREP: {
+
+                    Uri Fts_Mep_Uri = KitchenContract.FtsMepEntry.buildFtsMepUri(query);
+
+                    Cursor c = getContentResolver().query(
+                            Fts_Mep_Uri,
+                            null,
+                            null,
+                            selectionArgs,
+                            null
+                    );
+
+
+                    mepSearch = UtilityPojo.getMep(c);
+
+                    Log.v(String.valueOf(mepSearch.size()), "test");
+                    if (mepSearch.size() > 0) {
+
+                        for (int i = 0; i < mepSearch.size(); i++) {
+                            String description;
+                            if (mepSearch.get(i).getDescription().isEmpty()) {
+                                description = "null";
+
+                            } else description = mepSearch.get(i).getDescription();
+
+                            Log.v(mepSearch.get(i).getId() + "  " + mepSearch.get(i).getName(), description);
+                            arraylist = mepSearch;
+                            searchType = 3;
+
+                        }
+
+                    }
+                    c.close();
+                    break;
+                }
+                case TAB_INGREDIENT: {
+
+                    Uri Fts_Ingredient_Uri = KitchenContract.FtsIngredientEntry.buildFtsIngredientUri(query);
+
+                    Cursor c = getContentResolver().query(
+                            Fts_Ingredient_Uri,
+                            null,
+                            null,
+                            selectionArgs,
+                            null
+                    );
+
+
+                    ingredientSearch = UtilityPojo.getIngredient(c);
+
+                    Log.v(String.valueOf(ingredientSearch.size()), "test");
+                    if (ingredientSearch.size() > 0) {
+
+                        for (int i = 0; i < ingredientSearch.size(); i++) {
+
+
+                            Log.v(ingredientSearch.get(i).getId() + "  " + ingredientSearch.get(i).getName(), "test");
+
+                        }
+                        arraylist = ingredientSearch;
+                        searchType = 4;
+                    }
+                    c.close();
+                    break;
+                }
+
+                case TAB_SEARCH: {
+
+
+                    break;
+                }
+
+            }
+            searchArray = arraylist;
+
+
+            FragmentMain fragmentMain = (FragmentMain)
+                    getSupportFragmentManager().findFragmentByTag(TAB_MENU_FRAGMENT_TAG);
+
+            fragmentMain.onSearchresult(searchArray);
+
+
+        }
+
+
+
+
         Dish_detail_fragment fragment = (Dish_detail_fragment) getSupportFragmentManager().findFragmentByTag(MainActivity.DISHFRAGMENT_TAG);
 
         if (fragment != null) {
@@ -560,6 +599,7 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
         }
 
         if (tab == "SEARCH") {
+
             tab = " all";
         }
 
@@ -637,17 +677,14 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.length() == 1) {
-                    FragmentMain fragmentMain = (FragmentMain) getSupportFragmentManager().findFragmentById(R.id.container);
-                    fragmentMain.onSearchresult(menuSearch);
 
-                }
                 if (newText.length() >= 4) {
                     Intent searchIntent = new Intent(getApplicationContext(), MainActivity.class);
                     searchIntent.setAction(Intent.ACTION_SEARCH);
                     searchIntent.putExtra(SearchManager.QUERY, newText);
                     searchIntent.putExtra(SEARCH_TYPE, tab);
                     startActivity(searchIntent);
+
 
                 }
                 return false;

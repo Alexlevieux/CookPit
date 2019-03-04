@@ -299,8 +299,6 @@ public class Tab_menu extends Fragment implements LoaderManager.LoaderCallbacks<
 
     @Override
     public void onResume() {
-
-
         super.onResume();
     }
 

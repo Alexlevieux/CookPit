@@ -1,10 +1,13 @@
 package com.example.android.cookpit.pojoClass;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by alexandrelevieux on 23/01/2017.
  */
 
-public class Menu {
+public class Menu implements Parcelable {
     private int pojoId = 1;
     private String name;
     private String username;
@@ -20,6 +23,25 @@ public class Menu {
         this.username = Username;
 
     }
+
+    protected Menu(Parcel in) {
+        pojoId = in.readInt();
+        name = in.readString();
+        username = in.readString();
+        id = in.readInt();
+    }
+
+    public static final Creator<Menu> CREATOR = new Creator<Menu>() {
+        @Override
+        public Menu createFromParcel(Parcel in) {
+            return new Menu(in);
+        }
+
+        @Override
+        public Menu[] newArray(int size) {
+            return new Menu[size];
+        }
+    };
 
     public int getPojoId() {
         return this.pojoId;
@@ -49,4 +71,16 @@ public class Menu {
         this.username = Username;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(pojoId);
+        dest.writeString(name);
+        dest.writeString(username);
+        dest.writeInt(id);
+    }
 }

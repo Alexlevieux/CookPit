@@ -1,9 +1,12 @@
 package com.example.android.cookpit.pojoClass;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by alexandrelevieux on 23/01/2017.
  */
-public class Dish {
+public class Dish implements Parcelable {
     private String name;
     private String username;
     private String description;
@@ -20,6 +23,25 @@ public class Dish {
         this.description = Description;
 
     }
+
+    protected Dish(Parcel in) {
+        name = in.readString();
+        username = in.readString();
+        description = in.readString();
+        id = in.readInt();
+    }
+
+    public static final Creator<Dish> CREATOR = new Creator<Dish>() {
+        @Override
+        public Dish createFromParcel(Parcel in) {
+            return new Dish(in);
+        }
+
+        @Override
+        public Dish[] newArray(int size) {
+            return new Dish[size];
+        }
+    };
 
     public int getId() {
         return this.id;
@@ -54,5 +76,18 @@ public class Dish {
     }
 
 
+    @Override
+    public int describeContents() {
+
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(username);
+        dest.writeString(description);
+        dest.writeInt(id);
+    }
 }
 

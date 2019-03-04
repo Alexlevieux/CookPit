@@ -3,9 +3,14 @@ package com.example.android.cookpit;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTabHost;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +23,9 @@ import com.example.android.cookpit.TabFragments.Tab_dish;
 import com.example.android.cookpit.TabFragments.Tab_ingredient;
 import com.example.android.cookpit.TabFragments.Tab_menu;
 import com.example.android.cookpit.TabFragments.Tab_search;
+
+import java.sql.Array;
+import java.util.ArrayList;
 
 
 /**
@@ -33,6 +41,8 @@ public class FragmentMain extends Fragment {
     private Uri mUri;
     public static final String DETAIL_URI = "URI";
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
+    public static ArrayList arrayList;
+    FragmentManager fm;
 
 
     public FragmentMain() {
@@ -43,11 +53,18 @@ public class FragmentMain extends Fragment {
 
     public static FragmentMain newInstance(Boolean isSearchResult, Object result) {
 
+        return newInstance(isSearchResult, result, null, 0);
+    }
+
+    public static FragmentMain newInstance(Boolean isSearchResult, Object result, ArrayList arrayList, int parcelType) {
+
 
         FragmentMain fragment = new FragmentMain();
         Bundle args = new Bundle();
-
         args.putBoolean(ARG_PARAM1, isSearchResult);
+        args.putParcelableArrayList("searchArray", arrayList);
+        args.putInt("parcelType", parcelType);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,19 +82,15 @@ public class FragmentMain extends Fragment {
 
     }
 
-    public void onSearchresult(Object result) {
-        isSearchResult = true;
-        mTabHost.setCurrentTab(4);
-        isSearchResult = false;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         mTabHost = (FragmentTabHost) view.findViewById(R.id.tabhost);
-        mTabHost.setup(getContext(), getFragmentManager(), R.id.realtabcontent);
-
+        fm = getFragmentManager();
+        mTabHost.setup(getContext(), fm, R.id.realtabcontent);
+        arrayList = getArguments().getParcelableArrayList("searchArray");
 
         TabHost.TabSpec spec = mTabHost.newTabSpec("Tab One");
         View tabIndicator = LayoutInflater.from(getContext()).inflate(R.layout.tab_indicator, mTabHost.getTabWidget(), false);
@@ -121,7 +134,6 @@ public class FragmentMain extends Fragment {
 
         spec.setIndicator(tabIndicator);
 
-
         mTabHost.addTab(spec, Tab_MEP.class, savedInstanceState);
         spec = mTabHost.newTabSpec("Tab four");
 
@@ -143,11 +155,25 @@ public class FragmentMain extends Fragment {
 
 
         spec.setIndicator(tabIndicator);
-        mTabHost.addTab(spec, Tab_search.class, savedInstanceState);
+        if (arrayList != null) {
+
+
+            Bundle searchArgs = getArguments();
+
+            mTabHost.addTab(spec, Tab_search.class, searchArgs);
+
+            onSearchresult(arrayList);
+
+
+        } else {
+
+            mTabHost.addTab(spec, Tab_search.class, savedInstanceState);
+        }
+
+
 
 
         mTabHost.setSaveEnabled(true);
-
 
         mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -175,6 +201,7 @@ public class FragmentMain extends Fragment {
                         break;
                     }
                     case "Tab five": {
+
                         ((FragmentMain.Callback) getActivity()).OnTabchange(MainActivity.TAB_SEARCH, isSearchResult);
 
                         break;
@@ -188,6 +215,25 @@ public class FragmentMain extends Fragment {
 
         return view;
     }
+
+    public void onSearchresult(ArrayList result) {
+
+
+        isSearchResult = true;
+        Tab_search.searchArray = result;
+
+
+        mTabHost.setCurrentTab(4);
+        Tab_search tabSearch = (Tab_search)
+                fm.findFragmentByTag("Tab five");
+        if (tabSearch != null) {
+            tabSearch.onSearchUpdate();
+        }
+
+        isSearchResult = false;
+
+    }
+
 
 
 }

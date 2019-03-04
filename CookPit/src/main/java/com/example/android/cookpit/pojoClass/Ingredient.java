@@ -1,5 +1,8 @@
 package com.example.android.cookpit.pojoClass;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
@@ -8,7 +11,7 @@ import java.util.Map;
 /**
  * Created by alexandrelevieux on 23/01/2017.
  */
-public class Ingredient {
+public class Ingredient implements Parcelable {
 
     private String name;
     private String catA;
@@ -30,6 +33,26 @@ public class Ingredient {
 
     }
 
+
+    protected Ingredient(Parcel in) {
+        name = in.readString();
+        catA = in.readString();
+        catB = in.readString();
+        catC = in.readString();
+        id = in.readInt();
+    }
+
+    public static final Creator<Ingredient> CREATOR = new Creator<Ingredient>() {
+        @Override
+        public Ingredient createFromParcel(Parcel in) {
+            return new Ingredient(in);
+        }
+
+        @Override
+        public Ingredient[] newArray(int size) {
+            return new Ingredient[size];
+        }
+    };
 
     public int getId() {
         return this.id;
@@ -83,4 +106,17 @@ public class Ingredient {
         return result;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(catA);
+        dest.writeString(catB);
+        dest.writeString(catC);
+        dest.writeInt(id);
+    }
 }
