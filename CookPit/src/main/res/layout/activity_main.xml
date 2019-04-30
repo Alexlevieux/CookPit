@@ -15,14 +15,10 @@
         >
 
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/container"
-            android:name="com.example.android.kitchendrive.FragmentMain"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
 
-            tools:context="com.example.android.cookpit.FragmentMain"
-            tools:ignore="MergeRootFrame">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <com.developers.coolprogressviews.SimpleArcProgress
                 android:layout_width="match_parent"

@@ -1,0 +1,67 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.android.cookpit.Fragments.Home">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@color/cardview_light_background"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+
+            android:layout_gravity="center"
+            android:baselineAligned="false"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:paddingBottom="0dp"
+            android:paddingTop="0dp">
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+
+                android:layout_gravity="center_vertical"
+                android:layout_margin="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/nice_shape"
+                android:backgroundTintMode="add"
+                android:scaleType="fitCenter"
+                android:src="@drawable/gallery"
+                android:id="@+id/gallery_button" />
+
+            <ImageButton
+                android:id="@+id/main_fragment_button"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="100dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/nice_shape"
+                android:scaleType="fitCenter"
+                android:src="@drawable/menu" />
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+
+                android:layout_gravity="center_vertical"
+                android:layout_margin="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/nice_shape"
+                android:scaleType="fitCenter"
+                android:src="@drawable/menu1" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

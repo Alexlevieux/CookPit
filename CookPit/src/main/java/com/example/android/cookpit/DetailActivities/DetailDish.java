@@ -8,9 +8,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.android.cookpit.Adapter.DishViewPagerAdapter;
+import com.example.android.cookpit.Controller.Adapter.DishViewPagerAdapter;
 import com.example.android.cookpit.R;
-import com.example.android.cookpit.TabFragments.Tab_menu;
+import com.example.android.cookpit.Fragments.TabFragments.Tab_menu;
 
 import java.util.ArrayList;
 
@@ -51,7 +51,7 @@ public class DetailDish extends AppCompatActivity {
         if (dishListUri != null) {
             position = getIntent().getIntExtra(Tab_menu.POSITION, 0);
 
-            viewPager = (ViewPager) findViewById(R.id.detail_dish);
+            viewPager = findViewById(R.id.detail_dish);
 
             pagerAdapter = new DishViewPagerAdapter(getSupportFragmentManager(), dishListUri);
 

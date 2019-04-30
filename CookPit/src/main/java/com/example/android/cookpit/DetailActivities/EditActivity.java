@@ -10,12 +10,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.android.cookpit.Fragments.IngredientsFragment;
+import com.example.android.cookpit.Fragments.Dish_detail_fragment;
+import com.example.android.cookpit.Fragments.EditDishFragment;
+import com.example.android.cookpit.Fragments.dummy.IngredientsFragment;
 import com.example.android.cookpit.R;
-import com.example.android.cookpit.TabFragments.Tab_menu;
-import com.example.android.cookpit.UtilityPojo;
-import com.example.android.cookpit.data.KitchenContract;
-import com.example.android.cookpit.pojoClass.Ingredient;
+import com.example.android.cookpit.Fragments.TabFragments.Tab_menu;
+import com.example.android.cookpit.Model.UtilityPojo;
+import com.example.android.cookpit.Model.data.KitchenContract;
+import com.example.android.cookpit.Model.pojoClass.Ingredient;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -145,7 +147,7 @@ public class EditActivity extends AppCompatActivity implements Dish_detail_fragm
     }
 
     @Override
-    public void onListFragmentInteraction(Ingredient item) {
+    public void onListFragmentInteraction(Object item) {
 
     }
 

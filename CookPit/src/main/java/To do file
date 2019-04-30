@@ -1,0 +1,44 @@
+
+new app MVC architecture
+
+
+
+Gallery activity
+
+//todo Home Design Titles change icons ?
+
+//todo drawerMenu design
+
+
+
+//todo store drawable to firebase database
+//todo set-up insert to Firebase with sequence example : insert drawable, insert Mep-ingredient, to integrate with content provider Insert
+//todo
+
+
+//todo load drawable from firebase on sign in.
+//todo check app start and sequence checking without sign-out.
+//todo compatibility tablet home screen
+
+//todo create dataActivity holding fragmentMain
+//todo TabMenu design with treeCursorAdapter
+//todo tabIngredient fragment design
+//todo Tabdish loader
+
+
+//todo editActivity Dish, MEP, Ingredient
+
+
+//todo create OrderActivity and order Fragment
+//todo design order Fragment
+//todo design database for order fragment
+//todo import csv PO from firebase Storage
+
+//todo create KitchenSection table to attach Dish, MEP and ingredients
+
+
+
+
+
+
+

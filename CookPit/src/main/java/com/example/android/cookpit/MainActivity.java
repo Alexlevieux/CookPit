@@ -12,7 +12,8 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,37 +24,43 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.cookpit.Adapter.DishViewPagerAdapter;
+import com.example.android.cookpit.Fragments.FragmentMain;
+import com.example.android.cookpit.Fragments.Home;
+import com.example.android.cookpit.Controller.Adapter.DishViewPagerAdapter;
 import com.example.android.cookpit.DetailActivities.DetailDish;
-import com.example.android.cookpit.DetailActivities.Dish_detail_fragment;
-import com.example.android.cookpit.TabFragments.EditDishFragments.EditTabInstruction;
-import com.example.android.cookpit.TabFragments.Tab_dish;
-import com.example.android.cookpit.TabFragments.Tab_menu;
-import com.example.android.cookpit.TabFragments.Tab_menu_content;
-import com.example.android.cookpit.TabFragments.Tab_search;
-import com.example.android.cookpit.data.KitchenContract;
-import com.example.android.cookpit.pojoClass.Dish;
-import com.example.android.cookpit.pojoClass.Ingredient;
-import com.example.android.cookpit.pojoClass.Mep;
-import com.example.android.cookpit.pojoClass.cookPitUser;
-import com.example.android.cookpit.pojoClass.sequence;
+import com.example.android.cookpit.Fragments.Dish_detail_fragment;
+import com.example.android.cookpit.Model.Cloud;
+import com.example.android.cookpit.Model.UtilityPojo;
+import com.example.android.cookpit.Fragments.TabFragments.EditDishFragments.EditTabInstruction;
+import com.example.android.cookpit.Fragments.TabFragments.Tab_dish;
+import com.example.android.cookpit.Fragments.TabFragments.Tab_menu;
+import com.example.android.cookpit.Fragments.TabFragments.Tab_menu_content;
+import com.example.android.cookpit.Model.data.KitchenContract;
+import com.example.android.cookpit.Model.pojoClass.Dish;
+import com.example.android.cookpit.Model.pojoClass.Ingredient;
+import com.example.android.cookpit.Model.pojoClass.Mep;
+import com.example.android.cookpit.Model.pojoClass.cookPitUser;
+import com.example.android.cookpit.Model.pojoClass.sequence;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import android.support.design.widget.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements EditTabInstruction.searchOption, Tab_menu.Callback, FragmentMain.Callback, Cloud.cloudLoadCallBack {
+public class MainActivity extends AppCompatActivity implements GalleryActivity.Callback, EditTabInstruction.searchOption, Tab_menu.Callback, FragmentMain.Callback, Cloud.cloudLoadCallBack, Home.OnFragmentInteractionListener {
+
     public static final String TAB_MENU_FRAGMENT_TAG = "TMFTAG";
     public static final String DISHFRAGMENT_TAG = "DFTAG";
     public static final String DETAILDISHFRAGMENT_TAG = "DDFTAG";
@@ -83,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
 
+    FragmentManager fragmentManager;
 
     TextView menuTitle;
     TextView detailTitle;
@@ -102,22 +110,30 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
     boolean isConnected;
 
 
-    public ArrayList<com.example.android.cookpit.pojoClass.Menu> menuSearch;
+    public ArrayList<com.example.android.cookpit.Model.pojoClass.Menu> menuSearch;
     public ArrayList<Dish> dishSearch;
     public ArrayList<Mep> mepSearch;
     public ArrayList<Ingredient> ingredientSearch;
     private ArrayList searchArray;
     int searchType;
 
+    Home home;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthstateListener;
 
+    @Override
+    protected void onPause() {
+        fragmentManager = getSupportFragmentManager();
+
+        super.onPause();
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (mAuth != null) mAuth.removeAuthStateListener(mAuthstateListener);
         if (cloud != null) cloud.close();
+
 
         super.onSaveInstanceState(outState);
 
@@ -139,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
         super.onStart();
         if (isConnected && mAuth != null) {
             mAuth.addAuthStateListener(mAuthstateListener);
+
 
         }
 
@@ -174,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
         NavigationView navigationView = findViewById(R.id.left_drawer);
 
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.app_name, R.string.button_text_save) {
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -257,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
                     }
 
                 }
+
             }
         };
 
@@ -270,29 +288,43 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
 
         if (savedInstanceState == null) {
 //execute or not new database  "taskdatabase.execute();"//
+            Home home = Home.newInstance(null, null);
+
+            if (fragmentManager == null) {
+                fragmentManager = getSupportFragmentManager();
+            }
+            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.container, home);
+
+            fragmentTransaction.commit();
+
+
+
             if (isConnected) {
                 mAuth = FirebaseAuth.getInstance();
-                mAuth.signOut();
-                username = "";
-                connectStatus = OFFLINE;
+                if (mAuth.getUid() == null) {
+                    mAuth.signOut();
+                    username = "";
+                    connectStatus = OFFLINE;
+
+                }
+                connectStatus = ONLINE;
+                createCloud();
 
             }
 
-            FragmentMain fragmentMain = FragmentMain.newInstance(isSearchResult, null, searchArray, searchType);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, fragmentMain, TAB_MENU_FRAGMENT_TAG)
-                    .commit();
 
 
         } else {
 
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, FragmentMain.newInstance(isSearchResult, null, searchArray, searchType), TAB_MENU_FRAGMENT_TAG)
+                    .replace(R.id.container, Home.newInstance(null, null))
                     .commit();
+
             mAuth = FirebaseAuth.getInstance();
             progressArc = findViewById(R.id.arc_progress);
-            cloud = new Cloud(mAuth, progressArc, this);
+            cloud = Cloud.startCloud(mAuth, progressArc, this);
             cloud.defineCookPitUser();
 
             onDataInserted();
@@ -300,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
         }
 
         if (findViewById(R.id.dish_detail_container) != null) {
-            viewPager = (ViewPager) findViewById(R.id.dish_detail_container);
+            viewPager = findViewById(R.id.dish_detail_container);
             viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
                 @Override
@@ -353,6 +385,21 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
 
     }
 
+    public void createCloud() {
+        if (cloud == null) {
+
+            cloud = Cloud.startCloud(mAuth, progressArc, this);
+
+            cloud.defineCookPitUser();
+            onDataInserted();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, Home.newInstance(null, null))
+                    .commit();
+
+
+        }
+
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -362,15 +409,8 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
             if (resultCode == RESULT_OK) {
                 Toast.makeText(this, "Signed in!", Toast.LENGTH_SHORT).show();
 
-                if (cloud == null) {
+                createCloud();
 
-                    cloud = new Cloud(mAuth, progressArc, this);
-
-                    cloud.defineCookPitUser();
-                    onDataInserted();
-
-
-                }
 
 
                 return;
@@ -386,6 +426,7 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
 
     @Override
     public void onStop() {
+
         super.onStop();
 
     }
@@ -538,16 +579,19 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
 
             }
             searchArray = arraylist;
+            if (fragmentManager == null) {
+                fragmentManager = getSupportFragmentManager();
+            }
 
 
             FragmentMain fragmentMain = (FragmentMain)
-                    getSupportFragmentManager().findFragmentByTag(TAB_MENU_FRAGMENT_TAG);
-
-            fragmentMain.onSearchresult(searchArray);
+                    fragmentManager.findFragmentByTag(TAB_MENU_FRAGMENT_TAG);
+            if (fragmentMain != null) {
+                fragmentMain.onSearchresult(searchArray);
+            }
 
 
         }
-
 
 
 
@@ -587,6 +631,8 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
 
     @Override
     public void onBackPressed() {
+        getSupportFragmentManager().popBackStack();
+
 
     }
 
@@ -639,11 +685,11 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
 
         mActionBar.setDisplayShowCustomEnabled(true);
 
-        menuTitle = (TextView) v.findViewById(R.id.title_text);
-        detailTitle = (TextView) v.findViewById(R.id.detail_text);
+        menuTitle = v.findViewById(R.id.title_text);
+        detailTitle = v.findViewById(R.id.detail_text);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         tab = "MENU";
-        searchview = (SearchView) v.findViewById(R.id.searchView);
+        searchview = v.findViewById(R.id.searchView);
 
         searchview.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchview.setQueryHint(getResources().getString(R.string.search_hint, tab));
@@ -718,7 +764,7 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
 
     @Override
     public void onSequenceLoaded(sequence[] sequence) {
-        cloud.insertSequences();
+        cloud.insertSequencesToSqlite();
 
 
     }
@@ -726,10 +772,12 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
 
     @Override
     public void onDataInserted() {
-        Tab_menu fragment = (Tab_menu) getSupportFragmentManager().findFragmentByTag("Tab One");
+        FragmentMain fragment = (FragmentMain) getSupportFragmentManager().findFragmentByTag(TAB_MENU_FRAGMENT_TAG);
         if (fragment != null) {
-            fragment.getLoaderManager().restartLoader(Tab_menu.MENU_LOADER, fragment.getArguments(), fragment);
-            Tab_dish fragmentDish = (Tab_dish) getSupportFragmentManager().findFragmentByTag("Tab Two");
+            Tab_menu childFragment = (Tab_menu) fragment.getChildFragmentManager().findFragmentByTag("Tab One");
+            childFragment.getLoaderManager().restartLoader(Tab_menu.MENU_LOADER, fragment.getArguments(), childFragment);
+
+            Tab_dish fragmentDish = (Tab_dish) fragment.getChildFragmentManager().findFragmentByTag("Tab Two");
             if (fragmentDish != null) {
                 fragmentDish.getLoaderManager().restartLoader(Tab_dish.DISH_LOADER, fragmentDish.getArguments(), fragmentDish);
 
@@ -769,4 +817,70 @@ public class MainActivity extends AppCompatActivity implements EditTabInstructio
         return ingredientSearch;
     }
 
+    @Override
+    public void onFragmentInteraction(int fragmentType) {
+        Log.v("fragment number:", String.valueOf(fragmentType));
+
+        switch (fragmentType) {
+            case 1:
+                if (fragmentManager == null) {
+                    fragmentManager = getSupportFragmentManager();
+                }
+                FragmentMain fm = FragmentMain.newInstance(false, null);
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.container, fm, TAB_MENU_FRAGMENT_TAG);
+                transaction.addToBackStack(null);
+                transaction.commit();
+
+
+                break;
+            case 2:
+                Intent intent = new Intent(this, GalleryActivity.class);
+
+                startActivity(intent);
+                break;
+            case 3:
+                break;
+
+
+        }
+
+    }
+
+
+    @Override
+    public void onGalleryOpening() {
+
+    }
+
+    @Override
+    public void onImageadded(ArrayList<Uri> ImageUris) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        StorageReference picturesRef = storageRef.child("Pictures");
+
+        for (int i = 0; i < ImageUris.size(); i++) {
+
+            StorageReference pictureRef = picturesRef.child(ImageUris.get(i).getLastPathSegment());
+            UploadTask uploadTask = pictureRef.putFile(ImageUris.get(i));
+
+// Register observers to listen for when the download is done or if it fails
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                    // ...
+                }
+            });
+
+
+        }
+
+
+    }
 }

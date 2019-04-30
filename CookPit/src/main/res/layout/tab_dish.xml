@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:id="@+id/dish_frame"
 
-    tools:context="com.example.android.cookpit.TabFragments.Tab_customer">
+    tools:context=".Fragments.TabFragments.Tab_customer">
 
 
     <ListView

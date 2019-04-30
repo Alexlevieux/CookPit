@@ -1,6 +1,6 @@
 package com.example.android.cookpit.Fragments.dummy;
 
-import com.example.android.cookpit.pojoClass.Ingredient;
+import com.example.android.cookpit.Model.pojoClass.Ingredient;
 
 import java.util.ArrayList;
 import java.util.HashMap;

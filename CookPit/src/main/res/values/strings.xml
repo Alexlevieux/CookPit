@@ -8,6 +8,8 @@
     <string name="title_activity_edit">EditActivity</string>
     <string name="search_hint">Search <xliff:g id="tab">%1$s</xliff:g> </string>
     <string name="button_text_save">Save</string>
+    <string name="title_activity_gallery">GalleryActivity</string>
+    <string name="action_settings">Settings</string>
 
 
 </resources>
